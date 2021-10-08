@@ -1,7 +1,8 @@
 {
   type CoffeeCup = {
     shots: number;
-    hasMilk: boolean;
+    hasMilk?: boolean;
+    hasSuger?: boolean;
   };
 
   interface CoffeeMaker {
@@ -80,9 +81,36 @@
     }
   }
 
-  const machine = new CoffeeMachine(23);
-  const latteMachine = new CafeLatteMachine(23, "SSSS");
-  const coffee = latteMachine.makeCoffee(1);
-  console.log(coffee);
-  console.log(latteMachine.serialNumber);
+  class SweetCoffeeMaker extends CoffeeMachine {
+    constructor(beans: number, public readonly serialNumber?: string) {
+      // 부모의 생성자에 필요한 parameter 선언
+      super(beans); // 부모의 생성자 호출 필수
+    }
+
+    private putSugar() {
+      console.log("put in suger...");
+    }
+
+    makeCoffee(shots: number): CoffeeCup {
+      const coffee = super.makeCoffee(shots); // 부모 클래스의 함수를 호출하거나 접근할 수 있다.
+      this.putSugar();
+      return {
+        ...coffee,
+        hasSugar: true,
+      };
+    }
+  }
+
+  const machines: CoffeeMaker[] = [
+    new CoffeeMachine(16),
+    new CafeLatteMachine(16, "1"),
+    new SweetCoffeeMaker(16),
+    new CoffeeMachine(16),
+    new CafeLatteMachine(16, "1"),
+    new SweetCoffeeMaker(16),
+  ];
+  machines.forEach((machine) => {
+    console.log("-----------------------");
+    machine.makeCoffee(1);
+  });
 }
