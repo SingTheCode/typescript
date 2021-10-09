@@ -4,15 +4,14 @@
     hasMilk: boolean;
   };
 
-  interface CoffeeMaker {
-    // 필수 규약
-    makeCoffee(shots: number): CoffeeCup;
-  }
-
   interface CommercialCoffeeMaker {
     makeCoffee(shots: number): CoffeeCup;
     fillCoffeeBeans(beans: number): void;
     clean(): void;
+  }
+
+  interface CoffeeMaker {
+    makeCoffee(shots: number): CoffeeCup;
   }
 
   class CoffeeMachine implements CoffeeMaker, CommercialCoffeeMaker {
@@ -32,10 +31,6 @@
         throw new Error("value for beans should be greater than 0");
       }
       this.coffeeBeans += beans;
-    }
-
-    clean() {
-      console.log("cleaning the machine...");
     }
 
     private grindBeans(shots: number) {
@@ -63,21 +58,11 @@
       this.preheat();
       return this.extract(shots);
     }
+
+    clean() {
+      console.log("cleaning the machine...");
+    }
   }
-
-  const maker: CoffeeMachine = CoffeeMachine.makeMachine(10);
-  maker.fillCoffeeBeans(32);
-  maker.makeCoffee(2);
-
-  const maker2: CoffeeMachine = CoffeeMachine.makeMachine(10);
-  maker2.fillCoffeeBeans(32); // hasSugar라는 interface에는 fillCoffeeBeans메서드를 허락하지 않았다.
-  maker2.makeCoffee(2);
-  // interface : 얼만큼의 행동을 약속, 보장, 허용할껀지 정할 수 있다.
-
-  const maker3: CommercialCoffeeMaker = CoffeeMachine.makeMachine(10);
-  maker3.fillCoffeeBeans(32);
-  maker3.makeCoffee(2);
-  maker3.clean();
 
   class AmateurUser {
     constructor(private machine: CoffeeMaker) {}
@@ -86,7 +71,6 @@
       console.log(coffee);
     }
   }
-
   class ProBarista {
     constructor(private machine: CommercialCoffeeMaker) {}
     makeCoffee() {
@@ -97,10 +81,8 @@
     }
   }
 
-  // 동일한 object의 instance일지라도 두가지의 interface를 구현하기 때문에
-  // class 보다 조금 더 좁은 범위의 접근이 가능한 함수들만 접근 가능하다.
-  const maker4: CoffeeMachine = CoffeeMachine.makeMachine(32);
-  const amateur = new AmateurUser(maker4);
-  const pro = new ProBarista(maker4);
-  amateur.makeCoffee();
+  const maker: CoffeeMachine = CoffeeMachine.makeMachine(32);
+  const amateur = new AmateurUser(maker);
+  const pro = new ProBarista(maker);
+  pro.makeCoffee();
 }

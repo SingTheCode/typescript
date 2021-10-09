@@ -81,7 +81,7 @@
     }
   }
 
-  class SweetCoffeeMaker extends CoffeeMachine {
+  class SweetCoffeeMachine extends CoffeeMachine {
     constructor(beans: number, public readonly serialNumber?: string) {
       // 부모의 생성자에 필요한 parameter 선언
       super(beans); // 부모의 생성자 호출 필수
@@ -104,13 +104,19 @@
   const machines: CoffeeMaker[] = [
     new CoffeeMachine(16),
     new CafeLatteMachine(16, "1"),
-    new SweetCoffeeMaker(16),
+    new SweetCoffeeMachine(16),
     new CoffeeMachine(16),
     new CafeLatteMachine(16, "1"),
-    new SweetCoffeeMaker(16),
+    new SweetCoffeeMachine(16),
   ];
+  // 내부적으로 구현된 다양한 클래스들이 한가지 interface를 구현하거나
+  // 동일한 부모 클래스를 상속했을 때 동일한 함수를 어떤 클래스인지
+  // 구분하지 않고 공통된 api를 호출할 수 있는 것이 큰 장점이다.
   machines.forEach((machine) => {
     console.log("-----------------------");
     machine.makeCoffee(1);
   });
 }
+// 하나의 인터페이스나 부모의 클래스를 상속한 자식 클래스들이
+// 인터페이스와 부모클래스에 있는 함수들을
+// 다른 방식으로 다양하게 구성함으로써 좀 더 다양하게 구성하는 것을 말한다.

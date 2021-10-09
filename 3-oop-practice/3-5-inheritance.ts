@@ -5,32 +5,26 @@
   };
 
   interface CoffeeMaker {
-    // 필수 규약
     makeCoffee(shots: number): CoffeeCup;
   }
 
   class CoffeeMachine implements CoffeeMaker {
-    private static BEANS_GRAMM_PER_SHOT: number = 7; // class level instance를 생성할 때마다 나타나게되는 메모리낭비를 막아준다.
-    private coffeeBeans: number = 0; // instance (object) level
+    private static BEANS_GRAMM_PER_SHOT: number = 7;
+    private coffeeBeans: number = 0;
 
-    // 인스턴스를 생성할 때마다 호출된다.
-    constructor(coffeeBeans: number) {
+    protected constructor(coffeeBeans: number) {
       this.coffeeBeans = coffeeBeans;
     }
 
     static makeMachine(coffeeBeans: number): CoffeeMachine {
       return new CoffeeMachine(coffeeBeans);
-    } // 누군가가 생성자를 이용해 인스턴스를 생성하는 것을 방지하기 위해
+    }
 
     fillCoffeeBeans(beans: number) {
       if (beans < 0) {
         throw new Error("value for beans should be greater than 0");
       }
       this.coffeeBeans += beans;
-    }
-
-    clean() {
-      console.log("cleaning the machine...");
     }
 
     private grindBeans(shots: number) {
@@ -58,32 +52,38 @@
       this.preheat();
       return this.extract(shots);
     }
+
+    clean() {
+      console.log("cleaning the machine...");
+    }
   }
 
-  class CafeLatteMachine extends CoffeeMachine {
-    constructor(beans: number, public readonly serialNumber: string) {
-      // 부모의 생성자에 필요한 parameter 선언
-      super(beans); // 부모의 생성자 호출 필수
+  class CaffeLatteMachine extends CoffeeMachine {
+    private constructor(beans: number, public readonly serialNumber: string) {
+      super(beans);
     }
-
-    private steamMilk() {
+    private steamMilk(): void {
       console.log("Steaming some milk...");
     }
-
-    // overwriting 재정의
     makeCoffee(shots: number): CoffeeCup {
-      const coffee = super.makeCoffee(shots); // 부모 클래스의 함수를 호출하거나 접근할 수 있다.
+      const coffee = super.makeCoffee(shots);
       this.steamMilk();
       return {
         ...coffee,
         hasMilk: true,
       };
     }
+
+    static makeCaffeLatteMachine(
+      coffeeBeans: number,
+      serialNumber: string
+    ): CaffeLatteMachine {
+      return new CaffeLatteMachine(coffeeBeans, serialNumber);
+    }
   }
 
-  const machine = new CoffeeMachine(23);
-  const latteMachine = new CafeLatteMachine(23, "SSSS");
+  const machine = CoffeeMachine.makeMachine(32);
+  const latteMachine = CaffeLatteMachine.makeCaffeLatteMachine(32, "365820");
   const coffee = latteMachine.makeCoffee(1);
   console.log(coffee);
-  console.log(latteMachine.serialNumber);
 }

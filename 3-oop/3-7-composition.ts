@@ -5,12 +5,12 @@
     hasSugar?: boolean;
   };
 
-  interface CoffeeMaker {
+  interface hasSugar {
     // 필수 규약
     makeCoffee(shots: number): CoffeeCup;
   }
 
-  class CoffeeMachine implements CoffeeMaker {
+  class CoffeeMachine implements hasSugar {
     private static BEANS_GRAMM_PER_SHOT: number = 7; // class level instance를 생성할 때마다 나타나게되는 메모리낭비를 막아준다.
     private coffeeBeans: number = 0; // instance (object) level
 
@@ -105,7 +105,7 @@
     }
   }
 
-  class SweetCoffeeMaker extends CoffeeMachine {
+  class SweethasSugar extends CoffeeMachine {
     constructor(private beans: number, private sugar: AutomaticSugarMixer) {
       // 부모의 생성자에 필요한 parameter 선언
       super(beans); // 부모의 생성자 호출 필수
@@ -136,13 +136,13 @@
     }
   }
 
-  const machines: CoffeeMaker[] = [
+  const machines: hasSugar[] = [
     new CoffeeMachine(16),
     new CafeLatteMachine(16, "1"),
-    new SweetCoffeeMaker(16),
+    new SweethasSugar(16),
     new CoffeeMachine(16),
     new CafeLatteMachine(16, "1"),
-    new SweetCoffeeMaker(16),
+    new SweethasSugar(16),
   ];
   machines.forEach((machine) => {
     console.log("-----------------------");

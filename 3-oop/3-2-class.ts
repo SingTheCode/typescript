@@ -4,7 +4,7 @@
     hasMilk: boolean;
   };
 
-  class CoffeeMaker {
+  class CoffeeMachine {
     static BEANS_GRAMM_PER_SHOT: number = 7; // class level instance를 생성할 때마다 나타나게되는 메모리낭비를 막아준다.
     coffeeBeans: number = 0; // instance (object) level
 
@@ -13,15 +13,15 @@
       this.coffeeBeans = coffeeBeans;
     }
 
-    static makeMachine(coffeeBeans: number): CoffeeMaker {
-      return new CoffeeMaker(coffeeBeans);
+    static makeMachine(coffeeBeans: number): CoffeeMachine {
+      return new CoffeeMachine(coffeeBeans);
     }
 
     makeCoffee(shots: number): CoffeeCup {
-      if (this.coffeeBeans < shots * CoffeeMaker.BEANS_GRAMM_PER_SHOT) {
+      if (this.coffeeBeans < shots * CoffeeMachine.BEANS_GRAMM_PER_SHOT) {
         throw new Error("Not enough coffee beans!");
       }
-      this.coffeeBeans -= shots * CoffeeMaker.BEANS_GRAMM_PER_SHOT;
+      this.coffeeBeans -= shots * CoffeeMachine.BEANS_GRAMM_PER_SHOT;
       return {
         shots,
         hasMilk: false,
@@ -29,9 +29,9 @@
     }
   }
 
-  const maker = new CoffeeMaker(32);
+  const maker = new CoffeeMachine(32);
   console.log(maker);
-  const maker2 = CoffeeMaker.makeMachine(3); // constructor를 호출하지 않고 machine 생성
+  const maker2 = CoffeeMachine.makeMachine(3); // constructor를 호출하지 않고 machine 생성
   console.log(maker2);
 }
 
