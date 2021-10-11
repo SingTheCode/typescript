@@ -59,8 +59,40 @@
     }
   }
 
+  class CheapMilkSteamer {
+    private steamMilk(): void {
+      console.log("Steaming some milk...");
+    }
+    makeMilk(cup: CoffeeCup): CoffeeCup {
+      this.steamMilk();
+      return {
+        ...cup,
+        hasMilk: true,
+      };
+    }
+  }
+
+  class AutomaticSugarMixer {
+    private getSugar(): boolean {
+      console.log("Getting some sugar from jar");
+      return true;
+    }
+
+    addSugar(cup: CoffeeCup): CoffeeCup {
+      const sugar = this.getSugar();
+      return {
+        ...cup,
+        hasSugar: sugar,
+      };
+    }
+  }
+
   class CaffeLatteMachine extends CoffeeMachine {
-    private constructor(beans: number, public readonly serialNumber: string) {
+    private constructor(
+      beans: number,
+      public readonly serialNumber: string,
+      milkFrother: CheapMilkSteamer
+    ) {
       super(beans);
     }
     private steamMilk(): void {
@@ -83,31 +115,34 @@
     }
   }
 
-  class SweetCoffeMachine extends CoffeeMachine {
-    constructor(coffeeBeans: number) {
-      super(coffeeBeans);
+  class SweetCaffeMachine extends CoffeeMachine {
+    getSugar() {
+      console.log("Getting some sugar");
     }
 
     makeCoffee(shots: number): CoffeeCup {
       const coffee = super.makeCoffee(2);
+      this.getSugar();
       return {
         ...coffee,
         hasSugar: true,
       };
     }
 
-    static makeSweetCoffeeMachine(coffeeBeans: number): SweetCoffeMachine {
-      return new SweetCoffeMachine(coffeeBeans);
+    static makeSweetCoffeeMachine(coffeeBeans: number): SweetCaffeMachine {
+      return new SweetCaffeMachine(coffeeBeans);
     }
   }
+
+  class SweetCaffeLatteMachine extends CoffeeMachine {}
 
   const machines: CoffeeMaker[] = [
     CoffeeMachine.makeMachine(16),
     CaffeLatteMachine.makeCaffeLatteMachine(16, "1"),
-    SweetCoffeMachine.makeSweetCoffeeMachine(16),
+    SweetCaffeMachine.makeSweetCoffeeMachine(16),
     CoffeeMachine.makeMachine(16),
     CaffeLatteMachine.makeCaffeLatteMachine(16, "1"),
-    SweetCoffeMachine.makeSweetCoffeeMachine(16),
+    SweetCaffeMachine.makeSweetCoffeeMachine(16),
   ];
 
   machines.forEach((machine) => {
