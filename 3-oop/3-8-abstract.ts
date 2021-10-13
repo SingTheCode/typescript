@@ -9,16 +9,13 @@
     makeCoffee(shots: number): CoffeeCup;
   }
 
-  class CoffeeMachine implements CoffeeMaker {
+  // 추상화 클래스는 그 자체로 인스턴스를 만드는 것을 허용하지 않고 부모클래스로서 필요한 것들을 정의해놓고
+  abstract class CoffeeMachine implements CoffeeMaker {
     private static BEANS_GRAMM_PER_SHOT: number = 7;
     private coffeeBeans: number = 0;
 
     constructor(coffeeBeans: number) {
       this.coffeeBeans = coffeeBeans;
-    }
-
-    static makeMachine(coffeeBeans: number): CoffeeMachine {
-      return new CoffeeMachine(coffeeBeans);
     }
 
     fillCoffeeBeans(beans: number) {
@@ -43,14 +40,9 @@
     private preheat() {
       console.log("heating up...");
     }
-
-    private extract(shots: number): CoffeeCup {
-      console.log(`Pulling ${shots} shots...`);
-      return {
-        shots,
-        hasMilk: false,
-      };
-    }
+    // 자식 클래스마다 달라질 수 있는 행동이 있다면 행동을 추상화할 수 있다.
+    // 추상적인 메서드이므로 구현사항은 작성하지 않는다.
+    protected abstract extract(shots: number): CoffeeCup;
 
     makeCoffee(shots: number): CoffeeCup {
       this.grindBeans(shots);
@@ -68,51 +60,33 @@
       console.log("Steaming some milk...");
     }
 
-    makeCoffee(shots: number): CoffeeCup {
-      const coffee = super.makeCoffee(shots); // 부모 클래스의 함수를 호출하거나 접근할 수 있다.
+    protected extract(shots: number): CoffeeCup {
       this.steamMilk();
       return {
-        ...coffee,
+        shots,
         hasMilk: true,
       };
     }
   }
 
   class SweetCoffeeMachine extends CoffeeMachine {
-    constructor(beans: number, public readonly serialNumber?: string) {
-      super(beans);
-    }
-
-    private putSugar() {
-      console.log("put in suger...");
-    }
-
-    makeCoffee(shots: number): CoffeeCup {
-      const coffee = super.makeCoffee(shots);
-      this.putSugar();
+    protected extract(shots: number): CoffeeCup {
       return {
-        ...coffee,
+        shots,
         hasSugar: true,
       };
     }
   }
 
   const machines: CoffeeMaker[] = [
-    new CoffeeMachine(16),
     new CafeLatteMachine(16, "1"),
     new SweetCoffeeMachine(16),
-    new CoffeeMachine(16),
     new CafeLatteMachine(16, "1"),
     new SweetCoffeeMachine(16),
   ];
-  // 내부적으로 구현된 다양한 클래스들이 한가지 interface를 구현하거나
-  // 동일한 부모 클래스를 상속했을 때 동일한 함수를 어떤 클래스인지
-  // 구분하지 않고 공통된 api를 호출할 수 있는 것이 큰 장점이다.
+
   machines.forEach((machine) => {
     console.log("-----------------------");
     machine.makeCoffee(1);
   });
 }
-// 하나의 인터페이스나 부모의 클래스를 상속한 자식 클래스들이
-// 인터페이스와 부모클래스에 있는 함수들을
-// 다른 방식으로 다양하게 구성함으로써 좀 더 다양하게 구성하는 것을 말한다.

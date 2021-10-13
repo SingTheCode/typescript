@@ -5,7 +5,6 @@
   };
 
   interface CoffeeMaker {
-    // 필수 규약
     makeCoffee(shots: number): CoffeeCup;
   }
 
